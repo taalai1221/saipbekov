@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Салют 🎆</title>
+<style>
+    body {
+        margin: 0;
+        overflow: hidden;
+        background: black;
+    }
+    canvas {
+        display: block;
+    }
+</style>
+</head>
+<body>
+
+<canvas id="fireworks"></canvas>
+
+<script>
+const canvas = document.getElementById("fireworks");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+class Particle {
+    constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        this.angle = Math.random() * 2 * Math.PI;
+        this.speed = Math.random() * 5 + 2;
+        this.life = 100;
+    }
+
+    update() {
+        this.x += Math.cos(this.angle) * this.speed;
+        this.y += Math.sin(this.angle) * this.speed;
+        this.speed *= 0.95;
+        this.life--;
+    }
+
+    draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+    }
+}
+
+function createFirework(x, y) {
+    const colors = ["red", "yellow", "blue", "lime", "orange", "purple", "cyan"];
+    const color = colors[Math.floor(Math.random() * colors.length)];
+
+    for (let i = 0; i < 80; i++) {
+        particles.push(new Particle(x, y, color));
+    }
+}
+
+function animate() {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    particles.forEach((particle, index) => {
+        particle.update();
+        particle.draw();
+
+        if (particle.life <= 0) {45
+            particles.splice(index, 1);
+        }
+    });
+
+    requestAnimationFrame(animate);
+}
+
+canvas.addEventListener("click", (e) => {
+    createFirework(e.clientX, e.clientY);
+});
+
+setInterval(() => {
+    createFirework(
+        Math.random() * canvas.width,
+        Math.random() * canvas.height / 2
+    );
+}, 1500);
+
+animate();
+</script>
+
+</body>
+</html>
